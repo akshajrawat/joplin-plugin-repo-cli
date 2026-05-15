@@ -1,0 +1,36 @@
+{
+  "name": "joplin-plugin",
+  "version": "1.0.0",
+  "description": "Publishing CLI for Joplin plugins",
+  "main": "dist/index.js",
+  "bin": {
+    "joplin-plugin": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "joplin",
+    "plugin",
+    "publish"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "enquirer": "^2.4.1",
+    "open": "^11.0.0",
+    "semver": "^7.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.10",
+    "@types/semver": "^7.5.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
