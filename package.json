@@ -20,6 +20,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^11.1.0",
+    "dotenv": "^17.4.2",
     "enquirer": "^2.4.1",
     "open": "^11.0.0",
     "semver": "^7.5.4"

@@ -12,12 +12,12 @@ interface Credentials {
 
 const CONFIG_DIR = path.join(os.homedir(), '.config', 'joplin-plugin');
 const CREDENTIALS_PATH = path.join(CONFIG_DIR, 'credentials.json');
-const CLIENT_ID = process.env.JOPLIN_GITHUB_CLIENT_ID;
+
 
 export async function runPhase3(): Promise<string> {
-  if (!CLIENT_ID) {
-    throw new FatalError('❌ JOPLIN_GITHUB_CLIENT_ID environment variable is not set.');
-  }
+  
+  const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
+  if (!CLIENT_ID) throw new FatalError('❌ GITHUB_CLIENT_ID is not set in .env');
 
   // 1. TOKEN CACHE CHECK
   const cachedToken = getCachedToken();
@@ -25,9 +25,8 @@ export async function runPhase3(): Promise<string> {
     logger.success('✅ Using cached GitHub credentials');
     return cachedToken;
   }
-
   // 2. DEVICE FLOW INITIATION
-  const deviceCodeResponse = await initiateDeviceFlow();
+  const deviceCodeResponse = await initiateDeviceFlow(CLIENT_ID);
   const { device_code, user_code, verification_uri, interval } = deviceCodeResponse;
 
   console.log(`
@@ -40,7 +39,7 @@ export async function runPhase3(): Promise<string> {
   await open(verification_uri);
 
   // 3. POLLING
-  const accessToken = await pollForToken(device_code, interval);
+  const accessToken = await pollForToken(device_code, interval, CLIENT_ID);
 
   // 4. TOKEN STORAGE
   saveToken(accessToken);
@@ -67,7 +66,7 @@ function getCachedToken(): string | null {
   return null;
 }
 
-async function initiateDeviceFlow() {
+async function initiateDeviceFlow(CLIENT_ID : string) {
   const response = await fetch('https://github.com/login/device/code', {
     method: 'POST',
     headers: {
@@ -93,7 +92,7 @@ async function initiateDeviceFlow() {
   };
 }
 
-async function pollForToken(deviceCode: string, initialInterval: number): Promise<string> {
+async function pollForToken(deviceCode: string, initialInterval: number, CLIENT_ID: string): Promise<string> {
   let interval = initialInterval;
   
   while (true) {
